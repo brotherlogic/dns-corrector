@@ -38,14 +38,18 @@ func resolveIP(ctx context.Context, address string) (string, error) {
 }
 
 func main() {
-	log.Printf("First Pass")
+	for {
+		log.Printf("First Pass")
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
 
-	ip, err := getExternalIP(ctx)
-	log.Printf("Got IP: %v, %v", ip, err)
+		ip, err := getExternalIP(ctx)
+		log.Printf("Got IP: %v, %v", ip, err)
 
-	ip, err = resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
-	log.Printf("Resolved: %v and %v", ip, err)
+		ip, err = resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
+		log.Printf("Resolved: %v and %v", ip, err)
+
+		time.Sleep(time.Minute)
+	}
 }
