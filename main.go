@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"time"
 )
@@ -23,6 +24,19 @@ func getExternalIP(ctx context.Context) (string, error) {
 	return string(resBody), nil
 }
 
+func resolveIP(ctx context.Context, address string) (string, error) {
+	ips, err := net.LookupIP(address)
+	if err != nil {
+		return "", err
+	}
+
+	for _, ip := range ips {
+		log.Printf("Resolved %v -> %v", address, ip.String())
+	}
+
+	return ips[0].To16().String(), nil
+}
+
 func main() {
 	log.Printf("First Pass")
 
@@ -31,4 +45,7 @@ func main() {
 
 	ip, err := getExternalIP(ctx)
 	log.Printf("Got IP: %v, %v", ip, err)
+
+	ip, err = resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
+	log.Printf("Resolved: %v and %v", ip, err)
 }
