@@ -7,12 +7,6 @@ WORKDIR $GOPATH/src/github.com/brotherlogic/dns-corrector
 COPY go.mod ./
 #COPY go.sum ./
 
-RUN mkdir proto
-COPY proto/*.go ./proto/
-
-RUN mkdir server
-COPY server/*.go ./server/
-
 RUN go mod download
 
 COPY *.go ./
