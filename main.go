@@ -11,7 +11,7 @@ import (
 )
 
 func getExternalIP(ctx context.Context) (string, error) {
-	res, err := http.Get("wtfismyip.com/text")
+	res, err := http.Get("http://wtfismyip.com/text")
 	if err != nil {
 		return "", fmt.Errorf("unable to get data: %w", err)
 	}
