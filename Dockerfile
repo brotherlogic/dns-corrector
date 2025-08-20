@@ -5,7 +5,7 @@ FROM golang:1.23 AS build
 WORKDIR $GOPATH/src/github.com/brotherlogic/dns-corrector
 
 COPY go.mod ./
-COPY go.sum ./
+#COPY go.sum ./
 
 RUN mkdir proto
 COPY proto/*.go ./proto/
