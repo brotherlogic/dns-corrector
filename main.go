@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/cloudflare/cloudflare-go/v5"
@@ -19,9 +20,31 @@ type server struct {
 }
 
 func (s *server) runCorrection(ctx context.Context, newIP string) error {
-	s.client.DNS.Records.Update(ctx, "monitoring", dns.RecordUpdateParams{
-		ZoneID: cloudflare.F("brotherlogic-backend.com"),
+	client := cloudflare.NewClient(
+		option.WithAPIToken(os.Getenv("CLOUDFLARE_TOKEN")),
+	)
+
+	iter, err := client.DNS.Records.List(context.Background(), dns.RecordListParams{
+		ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
 	})
+	if err != nil {
+		log.Fatalf("Bad: %v", err)
+	}
+
+	for _, value := range iter.Result {
+		_, err := client.DNS.Records.Edit(context.Background(), value.ID,
+			dns.RecordEditParams{
+				ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
+				Body: &dns.RecordEditParamsBody{
+					Name:    cloudflare.F(value.Name),
+					Content: cloudflare.F(newIP),
+				},
+			})
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -56,11 +79,19 @@ func (s *server) loop() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	ip, err := getExternalIP(ctx)
-	log.Printf("Got IP: %v, %v", ip, err)
+	ipe, err := getExternalIP(ctx)
+	log.Printf("Got IP: %v, %v", ipe, err)
 
-	ip, err = resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
-	log.Printf("Resolved: %v and %v", ip, err)
+	ipi, err := resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
+	log.Printf("Resolved: %v and %v", ipi, err)
+
+	if ipi != ipe {
+		log.Printf("Running Correction")
+		err = s.runCorrection(ctx, ipe)
+		if err != nil {
+			log.Fatalf("Unable to run correction: %v", err)
+		}
+	}
 }
 
 func (s *server) run() {
