@@ -20,11 +20,8 @@ type server struct {
 }
 
 func (s *server) runCorrection(ctx context.Context, newIP string) error {
-	client := cloudflare.NewClient(
-		option.WithAPIToken(os.Getenv("CLOUDFLARE_TOKEN")),
-	)
 
-	iter, err := client.DNS.Records.List(context.Background(), dns.RecordListParams{
+	iter, err := s.client.DNS.Records.List(context.Background(), dns.RecordListParams{
 		ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
 	})
 	if err != nil {
@@ -32,7 +29,7 @@ func (s *server) runCorrection(ctx context.Context, newIP string) error {
 	}
 
 	for _, value := range iter.Result {
-		_, err := client.DNS.Records.Edit(context.Background(), value.ID,
+		_, err := s.client.DNS.Records.Edit(context.Background(), value.ID,
 			dns.RecordEditParams{
 				ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
 				Body: &dns.RecordEditParamsBody{
