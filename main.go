@@ -79,7 +79,7 @@ func (s *server) loop() {
 	ipe, err := getExternalIP(ctx)
 	log.Printf("Got IP: %v, %v", ipe, err)
 
-	ipi, err := resolveIP(ctx, "gramophile-grpc.brotherlogic-backend.com")
+	ipi, err := resolveIP(ctx, "uptime.brotherlogic-backend.com")
 	log.Printf("Resolved: %v and %v", ipi, err)
 
 	if ipi != ipe {
