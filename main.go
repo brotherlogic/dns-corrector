@@ -107,7 +107,7 @@ func (s *server) run() {
 func main() {
 
 	client := cloudflare.NewClient(
-		option.WithAPIToken("TOKEN"),
+		option.WithAPIToken(os.Getenv("CLOUDFLARE_TOKEN")),
 	)
 
 	s := &server{
