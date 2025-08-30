@@ -91,6 +91,8 @@ func (s *server) loop() {
 		if err != nil {
 			log.Fatalf("Unable to run correction: %v", err)
 		}
+	} else {
+		log.Printf("No need for correction")
 	}
 }
 
