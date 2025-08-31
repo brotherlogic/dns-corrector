@@ -2,9 +2,6 @@
 
 FROM golang:1.24.6 AS build
 
-# Install ca-certificates package
-RUN apt-get update && apt-get install -y ca-certificates
-
 WORKDIR $GOPATH/src/github.com/brotherlogic/dns-corrector
 
 COPY go.mod ./
@@ -21,6 +18,10 @@ RUN CGO_ENABLED=0 go build -o /dns-corrector
 ##
 FROM ubuntu:22.04
 USER root:root
+
+# Install ca-certificates package
+RUN apt-get update && apt-get install -y ca-certificates
+
 
 WORKDIR /
 COPY --from=build /dns-corrector /dns-corrector
