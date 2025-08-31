@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/cloudflare/cloudflare-go/v5"
@@ -57,7 +58,7 @@ func getExternalIP(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("unable to read body: %w", err)
 	}
 
-	return string(resBody), nil
+	return strings.TrimSpace(string(resBody)), nil
 }
 
 func resolveIP(ctx context.Context, address string) (string, error) {
