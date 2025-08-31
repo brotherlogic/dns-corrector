@@ -29,7 +29,7 @@ func (s *server) runCorrection(ctx context.Context, newIP string) error {
 	}
 
 	for _, value := range iter.Result {
-		_, err := s.client.DNS.Records.Edit(context.Background(), value.ID,
+		r, err := s.client.DNS.Records.Edit(context.Background(), value.ID,
 			dns.RecordEditParams{
 				ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
 				Body: &dns.RecordEditParamsBody{
@@ -37,6 +37,7 @@ func (s *server) runCorrection(ctx context.Context, newIP string) error {
 					Content: cloudflare.F(newIP),
 				},
 			})
+		log.Printf("SET %v to %v -> %v, %v", value.Name, newIP, r, err)
 		if err != nil {
 			return err
 		}

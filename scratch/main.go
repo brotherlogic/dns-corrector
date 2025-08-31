@@ -33,7 +33,7 @@ func main() {
 		dns.RecordEditParams{
 			ZoneID: cloudflare.F("ee08022dbf5b9233d104a2b7a1778a82"),
 			Body: &dns.RecordEditParamsBody{
-				Name: cloudflare.F("registry.brotherlogic-backend.com"),
+				Name: cloudflare.F("uptime.brotherlogic-backend.com"),
 			},
 		})
 
