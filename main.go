@@ -84,7 +84,7 @@ func (s *server) loop() {
 	log.Printf("Resolved: %v and %v", ipi, err)
 
 	if ipi != ipe {
-		log.Printf("Running Correction")
+		log.Printf("Running Correction because '%v' != '%v'", ipi, ipe)
 		err = s.runCorrection(ctx, ipe)
 		if err != nil {
 			log.Fatalf("Unable to run correction: %v", err)
