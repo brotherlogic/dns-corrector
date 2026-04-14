@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/cloudflare/cloudflare-go/v5"
@@ -57,7 +58,7 @@ func getExternalIP(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("unable to read body: %w", err)
 	}
 
-	return string(resBody), nil
+	return strings.TrimSpace(string(resBody)), nil
 }
 
 func resolveIP(ctx context.Context, address string) (string, error) {
@@ -84,7 +85,7 @@ func (s *server) loop() {
 	log.Printf("Resolved: %v and %v", ipi, err)
 
 	if ipi != ipe {
-		log.Printf("Running Correction")
+		log.Printf("Running Correction because '%v' != '%v'", ipi, ipe)
 		err = s.runCorrection(ctx, ipe)
 		if err != nil {
 			log.Fatalf("Unable to run correction: %v", err)
